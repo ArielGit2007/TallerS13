@@ -58,7 +58,9 @@ printf("Ingrese el modelo del auto:\n");
 fgets(datos_auto.modelo,sizeof(datos_auto.modelo),stdin);
 BorrarSaltolinea(datos_auto.modelo);
 datos_auto.Activo=1;
-
+datos_auto.cliente.id=0;
+strcpy(datos_auto.cliente.Nombre,"");
+datos_auto.Disponible=1;
 
 GuardarDatosAuto(&datos_auto);
 }
@@ -74,7 +76,18 @@ void mostrarDatosAuto(){
         
         if (autos[i].Activo==1)
         {
-            printf("|%-6d| %-14s| %-7d| %-12.2f| %-9s| %-11s| %-15s|\n",autos[i].id,autos[i].Marca,autos[i].Anio,autos[i].Precio,autos[i].Color,autos[i].Estado,autos[i].modelo);
+            printf("|%-6d| %-14s| %-7d| %-12.2f| %-9s| %-11s| %-15s|\n",
+                                                            autos[i].id,
+                                                            autos[i].Marca,
+                                                            autos[i].Anio,
+                                                            autos[i].Precio,
+                                                            autos[i].Color,autos[i].
+                                                            Estado,autos[i].modelo);
+            if ((autos[i].cliente.Nombre!="\0" && autos[i].cliente.id!=0))
+            {
+                printf("   -> Comprado por: %s (ID: %d)\n",autos[i].cliente.Nombre,autos[i].cliente.id);
+            }
+            
         }
         
     }
@@ -109,6 +122,37 @@ void validarID(int *id){
     
 }
 
+void HacerCompra(){
+    DatosAuto autos[10];
+    int count=leerDatosAuto(autos);
+    printf("Ingrese el ID del auto que desea comprar:\n");
+    int Id=leerIntegerRango(1000,9999);
+    int Posicion=EncontarAutoID(autos, Id);
+    if (Posicion!=-1 && autos[Posicion].Disponible==1)
+    {
+        printf("Ingrese los datos del cliente:\n");
+        while(getchar()!='\n');
+        printf("Nombre del cliente:\n");
+        fgets(autos[Posicion].cliente.Nombre,sizeof(autos[Posicion].cliente.Nombre),stdin);
+        BorrarSaltolinea(autos[Posicion].cliente.Nombre); 
+        printf("ID del cliente:\n");
+        autos[Posicion].cliente.id=leerIntegerRango(1000,9999);
+        autos[Posicion].Disponible=0;
+
+        GuardarAutoEnPosicion(autos, Posicion);
+        printf("Compra realizada con exito.\n");
+    }
+    else if (Posicion!=-1 && autos[Posicion].Disponible==0)
+    {
+        printf("El auto con ID %d no esta disponible para la venta.\n", Id);
+    }
+    else
+    {
+        printf("No se encontro un auto con el ID %d.\n", Id);
+    }
+    
+}
+
 //ARCHIVOS BINARIOS 
 void GuardarDatosAuto(DatosAuto *autos){
     FILE *f;
@@ -136,6 +180,45 @@ int leerDatosAuto(DatosAuto *autos){
     fclose(f);
     return count;
 }
+
+void GuardarAutoEnPosicion(DatosAuto *autos, int posicion){
+    FILE *f = fopen("autos.dat", "r+b");
+    if (f == NULL) {
+        printf("No se puede abrir el archivo.\n");
+        return;
+    }
+    fseek(f, posicion * sizeof(DatosAuto), SEEK_SET);
+    fwrite(&autos[posicion], sizeof(DatosAuto), 1, f);
+    fclose(f);
+}
+
+
+int EncontarAutoID(DatosAuto *autos, int Id){
+    int posicion=0, flag=0;
+    FILE *f = fopen("autos.dat", "rb");
+    if (f == NULL)
+    {
+        printf("Error al abrir el archivo\n");
+    }
+    else
+    {
+        while (fread(autos, sizeof(DatosAuto), 1, f))
+        {
+            if (autos->id == Id)
+            {
+                flag = 1;
+                break;
+            }
+            posicion = (ftell(f) / sizeof(DatosAuto)) - 1;
+        }
+        if (flag == 0)
+        {
+            posicion = -1;
+        }
+    }
+    return posicion;
+}
+
 
 void BorrarSaltolinea(char *a)
 {

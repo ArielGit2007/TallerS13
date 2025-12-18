@@ -13,6 +13,7 @@ char Color[20];
 char Estado[15];
 char modelo[50];
 int Activo;
+int Disponible;
 DatosCliente cliente;
 }DatosAuto;
 
@@ -24,3 +25,6 @@ void mostrarDatosAuto();
 void GuardarDatosAuto(DatosAuto *autos);
 int leerDatosAuto(DatosAuto *autos);
 void BorrarSaltolinea(char *a);
+void HacerCompra();
+int EncontarAutoID(DatosAuto *autos, int Id);
+void GuardarAutoEnPosicion(DatosAuto *autos, int posicion);

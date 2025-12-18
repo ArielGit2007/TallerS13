@@ -8,8 +8,10 @@ do{
     printf("Gestion de Autos\n");
     printf("1. Ingresar nuevo auto\n");
     printf("2. Mostrar autos\n");
-    printf("3. Salir\n");
-    opc1=leerIntegerRango(1,3);
+    printf("3. Hacer compra\n");
+    printf("4. Buscar autos por criterio\n");
+    printf("5. Salir\n");
+    opc1=leerIntegerRango(1,5);
     switch (opc1)
     {
     case 1:
@@ -19,6 +21,11 @@ do{
         mostrarDatosAuto();
         break;
     case 3:
+        HacerCompra();
+        break;
+    case 4:
+        break;
+    case 5:
         printf("Saliendo del programa...\n");
         break;
     default:
@@ -28,12 +35,12 @@ do{
 
     }
 
-    if(opc1!=3){
+    if(opc1!=5){
         printf("Desea realizar otra operacion? 1.Si 2.No\n");
         opc2=leerIntegerRango(1,2);
     }
 
-}while(opc2!=2 && opc1!=3);
+}while(opc2!=2 && opc1!=5);
 
 return 0;
 }
