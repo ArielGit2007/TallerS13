@@ -28,3 +28,4 @@ void BorrarSaltolinea(char *a);
 void HacerCompra();
 int EncontarAutoID(DatosAuto *autos, int Id);
 void GuardarAutoEnPosicion(DatosAuto *autos, int posicion);
+void EliminarAuto();
