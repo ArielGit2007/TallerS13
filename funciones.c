@@ -135,6 +135,39 @@ void validarID(int *id)
     return;
 }
 
+int validarIDCliente(int *id)
+{
+    DatosAuto autos[20];
+    int count = leerDatosAuto(autos);
+    int disponible = 0;
+    do
+    {
+        if (count == 0)
+        {
+            disponible = 1;
+        }
+        else
+        {
+
+            for (int i = 0; i < count; i++)
+            {
+                if (autos[i].cliente.id == (*id))
+                {
+                    printf("El ID del cliente ya existe. Ingrese otro ID:\n");
+                    *id = leerIntegerRango(1000, 9999);
+                    disponible = 0;
+                    break;
+                }
+                else
+                {
+                    disponible = 1;
+                }
+            }
+        }
+    } while (disponible == 0);
+    return disponible;
+}
+
 void HacerCompra()
 {
     DatosAuto autos[20];
@@ -142,7 +175,6 @@ void HacerCompra()
     printf("Ingrese el ID del auto que desea comprar:\n");
     int Id = leerIntegerRango(1000, 9999);
     int Posicion = EncontarAutoID(autos, Id);
-    printf("DEBUG: Posicion=%d, ID encontrado=%d\n", Posicion, autos[Posicion].id);
     if (Posicion != -1 && autos[Posicion].Disponible == 1)
     {
         printf("Ingrese los datos del cliente:\n");
@@ -150,9 +182,12 @@ void HacerCompra()
             ;
         printf("Nombre del cliente:\n");
         fgets(autos[Posicion].cliente.Nombre, sizeof(autos[Posicion].cliente.Nombre), stdin);
+        printf("Ingrese la edad del cliente:\n");
+        autos[Posicion].cliente.edad = leerIntegerRango(18, 120);
         BorrarSaltolinea(autos[Posicion].cliente.Nombre);
         printf("ID del cliente:\n");
         autos[Posicion].cliente.id = leerIntegerRango(1000, 9999);
+        validarIDCliente(&autos[Posicion].cliente.id);
         autos[Posicion].Disponible = 0;
 
         GuardarAutoEnPosicion(autos, Posicion);
@@ -194,6 +229,161 @@ void EliminarAuto()
         printf("No se encontro un auto con el ID %d.\n", Id);
     }
 }
+
+void imprimirAuto(DatosAuto autoData){
+    printf("|%-6d| %-14s| %-7d| %-12.2f| %-9s| %-11s| %-15s|\n",
+           autoData.id,
+           autoData.Marca,
+           autoData.Anio,
+           autoData.Precio,
+           autoData.Color, autoData.Estado, autoData.modelo);
+    if (autoData.cliente.id != 0)
+    {
+        printf("   -> Comprado por: %s (ID: %d)\n", autoData.cliente.Nombre, autoData.cliente.id);
+    }
+    
+}
+
+void BuscarAutoPorCriterio(){
+    DatosAuto autos[20];
+    int count = leerDatosAuto(autos);
+    int opcion;
+    int encontrados = 0;
+
+    if (count == 0) {
+        printf("No hay autos registrados.\n");
+        return;
+    }
+
+    char marca[50];
+    char color[20];
+    char estado[15];
+    char modelo[50];
+    int anio;
+    float precioMax = 0.0;
+    
+    int usarMarca = 0, usarColor = 0, usarAnio = 0, usarPrecio = 0, usarEstado = 0, usarModelo = 0;
+    
+
+
+    do
+    {
+        printf("Ingrese los filtros de busqueda:\n");
+        printf("1. Marca\n");
+        printf("2. Color\n");
+        printf("3. Precio maximo\n");
+        printf("4. Anio\n");
+        printf("5. Estado\n");
+        printf("6. Modelo\n");
+        printf("0. Finalizar busqueda\n");
+
+        opcion = leerIntegerRango(0, 6);
+
+        switch (opcion)
+        {
+        case 1:
+            usarMarca = 1;
+            while (getchar() != '\n');
+            printf("Ingrese la marca a buscar:\n");
+            fgets(marca, sizeof(marca), stdin);
+            BorrarSaltolinea(marca);
+            break;
+
+        case 2:
+            usarColor = 1;
+            while (getchar() != '\n');
+            printf("Ingrese el color a buscar:\n");
+            fgets(color, sizeof(color), stdin);
+            BorrarSaltolinea(color);
+            break;
+
+        case 3:
+            usarPrecio = 1;
+            printf("Ingrese el precio maximo a buscar:\n");
+            precioMax = leerFlotanteRango(0, 1000000);
+            break;
+
+        case 4:
+            usarAnio = 1;
+            printf("Ingrese el anio a buscar:\n");
+            anio = leerIntegerRango(1950, 2025);
+            break;
+
+        case 5:
+            usarEstado = 1;
+            while (getchar() != '\n');
+            printf("Ingrese el estado a buscar:\n");
+            fgets(estado, sizeof(estado), stdin);
+            BorrarSaltolinea(estado);
+            break;
+
+        case 6:
+            usarModelo = 1;
+            while (getchar() != '\n');
+            printf("Ingrese el modelo a buscar:\n");
+            fgets(modelo, sizeof(modelo), stdin);
+            BorrarSaltolinea(modelo);
+            break;
+        }
+    } while (opcion != 0);
+
+    printf("|%-6s| %-14s| %-7s| %-12s| %-9s| %-11s| %-15s|\n",
+           "ID", "Marca", "Anio", "Precio", "Color", "Estado", "Modelo");
+    printf("----------------------------------------------------------------------------------------\n");
+
+    for (int i = 0; i < count; i++)
+    {
+        // Por defecto, solo autos activos y disponibles
+        if (autos[i].Activo != 1 || autos[i].Disponible != 1)
+            continue;
+
+        if (usarMarca && strcasecmp(autos[i].Marca, marca) != 0)
+            continue;
+
+        if (usarColor && strcasecmp(autos[i].Color, color) != 0)
+            continue;
+
+        if (usarPrecio && autos[i].Precio > precioMax)
+            continue;
+
+        if (usarAnio && autos[i].Anio != anio)
+            continue;
+
+        if (usarEstado && strcasecmp(autos[i].Estado, estado) != 0)
+            continue;
+
+        if (usarModelo && strcasecmp(autos[i].modelo, modelo) != 0)
+            continue;
+
+        imprimirAuto(autos[i]);
+        encontrados++;
+    }
+
+    if (encontrados == 0)
+    {
+        printf("No se encontraron autos que coincidan con los criterios especificados.\n");
+    }
+
+
+}
+void buscarAutobyId(){
+    DatosAuto autos[20];
+    int count = leerDatosAuto(autos);
+    printf("Ingrese el ID del auto que desea buscar:\n");
+    int Id = leerIntegerRango(1000, 9999);
+    int Posicion = EncontarAutoID(autos, Id);
+    if (Posicion != -1)
+    {
+        printf("|%-6s| %-14s| %-7s| %-12s| %-9s| %-11s| %-15s|\n", "ID", "Marca", "Anio", "Precio", "Color", "Estado", "Modelo");
+        printf("----------------------------------------------------------------------------------------\n");
+        imprimirAuto(autos[Posicion]);
+    }
+    else
+    {
+        printf("No se encontro un auto con el ID %d.\n", Id);
+    }
+}
+
 // ARCHIVOS BINARIOS
 void GuardarDatosAuto(DatosAuto *autos)
 {
@@ -218,7 +408,11 @@ int leerDatosAuto(DatosAuto *autos)
             fclose(f);
         return 0;
     }
-    int count = fread(autos, sizeof(DatosAuto), 10, f);
+    int count = 0;
+    while (count < 20 && fread(&autos[count], sizeof(DatosAuto), 1, f) == 1)
+    {
+        count++;
+    }
     fclose(f);
     return count;
 }

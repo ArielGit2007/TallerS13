@@ -1,6 +1,7 @@
 typedef struct{
 char Nombre[50];
 int id;
+int edad;
 }DatosCliente;
 
 
@@ -29,3 +30,7 @@ void HacerCompra();
 int EncontarAutoID(DatosAuto *autos, int Id);
 void GuardarAutoEnPosicion(DatosAuto *autos, int posicion);
 void EliminarAuto();
+void imprimirAuto(DatosAuto autoData);
+void BuscarAutoPorCriterio();
+int validarIDCliente(int *id);
+void buscarAutobyId();
