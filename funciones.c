@@ -384,6 +384,85 @@ void buscarAutobyId(){
     }
 }
 
+void editarAuto(){
+    DatosAuto autos[20];
+    int count = leerDatosAuto(autos);
+    printf("Ingrese el ID del auto que desea editar:\n");
+    int Id = leerIntegerRango(1000, 9999);
+    int Posicion = EncontarAutoID(autos, Id);
+    if (Posicion != -1)
+    {
+        do
+        {
+        printf("Datos actuales del auto:\n");
+        printf("|%-6s| %-14s| %-7s| %-12s| %-9s| %-11s| %-15s|\n", "ID", "Marca", "Anio", "Precio", "Color", "Estado", "Modelo");
+        printf("----------------------------------------------------------------------------------------\n");
+        imprimirAuto(autos[Posicion]);
+        
+        printf("Ingrese el dato que desea editar:\n");
+        printf("1. Marca\n");
+        printf("2. Anio\n");
+        printf("3. Precio\n");
+        printf("4. Color\n");
+        printf("5. Estado\n");
+        printf("6. Modelo\n");
+
+        int opcion = leerIntegerRango(1, 6);
+
+        switch (opcion)
+        {
+        case 1:
+            while (getchar() != '\n');
+            printf("Ingrese la nueva marca del auto:\n");
+            fgets(autos[Posicion].Marca, sizeof(autos[Posicion].Marca), stdin);
+            BorrarSaltolinea(autos[Posicion].Marca);
+            break;
+
+        case 2:
+            printf("Ingrese el nuevo anio del auto:\n");
+            autos[Posicion].Anio = leerIntegerRango(1950, 2025);
+            break;
+
+        case 3:
+            printf("Ingrese el nuevo precio del auto:\n");
+            autos[Posicion].Precio = leerFlotanteRango(0, 1000000);
+            break;
+
+        case 4:
+            while (getchar() != '\n');
+            printf("Ingrese el nuevo color del auto:\n");
+            fgets(autos[Posicion].Color, sizeof(autos[Posicion].Color), stdin);
+            BorrarSaltolinea(autos[Posicion].Color);
+            break;
+
+        case 5:
+            while (getchar() != '\n');
+            printf("Ingrese el nuevo estado del auto:\n");
+            fgets(autos[Posicion].Estado, sizeof(autos[Posicion].Estado), stdin);
+            BorrarSaltolinea(autos[Posicion].Estado);
+            break;
+
+        case 6:
+            while (getchar() != '\n');
+            printf("Ingrese el nuevo modelo del auto:\n");
+            fgets(autos[Posicion].modelo, sizeof(autos[Posicion].modelo), stdin);
+            BorrarSaltolinea(autos[Posicion].modelo);
+            break;
+        default:
+            printf("Opcion invalida.\n");
+            break;
+        }
+        GuardarAutoEnPosicion(autos, Posicion);
+        printf("Desea editar otro campo del mismo auto? 1.Si 2.No\n");
+        
+        } while (leerIntegerRango(1, 2) == 1);
+        printf("Auto actualizado correctamente.\n");
+    }
+    else
+    {
+        printf("No se encontro un auto con el ID %d.\n", Id);
+    }
+}
 // ARCHIVOS BINARIOS
 void GuardarDatosAuto(DatosAuto *autos)
 {

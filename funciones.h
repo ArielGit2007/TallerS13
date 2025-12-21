@@ -34,3 +34,4 @@ void imprimirAuto(DatosAuto autoData);
 void BuscarAutoPorCriterio();
 int validarIDCliente(int *id);
 void buscarAutobyId();
+void editarAuto();
