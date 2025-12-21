@@ -59,7 +59,7 @@ void LeerDatosAuto()
     printf("Ingrese el color del auto:\n");
     fgets(datos_auto.Color, sizeof(datos_auto.Color), stdin);
     BorrarSaltolinea(datos_auto.Color);
-    printf("Ingrese el estado del auto:\n");
+    printf("Ingrese el estado del auto (Usado/Seminuevo/Nuevo):\n");
     fgets(datos_auto.Estado, sizeof(datos_auto.Estado), stdin);
     BorrarSaltolinea(datos_auto.Estado);
     printf("Ingrese el modelo del auto:\n");
@@ -68,6 +68,7 @@ void LeerDatosAuto()
     datos_auto.Activo = 1;
     datos_auto.cliente.id = 0;
     strcpy(datos_auto.cliente.Nombre, "");
+    datos_auto.cliente.edad = 0;
     datos_auto.Disponible = 1;
 
     GuardarDatosAuto(&datos_auto);
@@ -95,7 +96,7 @@ void mostrarDatosAuto()
 
                 if ((autos[i].cliente.Nombre[0] != '\0' && autos[i].cliente.id != 0))
                 {
-                    printf("   -> Comprado por: %s (ID: %d)\n", autos[i].cliente.Nombre, autos[i].cliente.id);
+                    printf("   -> Comprado por: %s (ID: %d, edad: %d)\n", autos[i].cliente.Nombre, autos[i].cliente.id, autos[i].cliente.edad);
                 }
             }
         }
@@ -239,7 +240,7 @@ void imprimirAuto(DatosAuto autoData){
            autoData.Color, autoData.Estado, autoData.modelo);
     if (autoData.cliente.id != 0)
     {
-        printf("   -> Comprado por: %s (ID: %d)\n", autoData.cliente.Nombre, autoData.cliente.id);
+        printf("   -> Comprado por: %s (ID: %d, edad: %d)\n", autoData.cliente.Nombre, autoData.cliente.id, autoData.cliente.edad);
     }
     
 }
@@ -398,7 +399,7 @@ void editarAuto(){
         printf("|%-6s| %-14s| %-7s| %-12s| %-9s| %-11s| %-15s|\n", "ID", "Marca", "Anio", "Precio", "Color", "Estado", "Modelo");
         printf("----------------------------------------------------------------------------------------\n");
         imprimirAuto(autos[Posicion]);
-        
+
         printf("Ingrese el dato que desea editar:\n");
         printf("1. Marca\n");
         printf("2. Anio\n");

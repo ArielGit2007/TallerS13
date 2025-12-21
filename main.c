@@ -5,6 +5,8 @@ int main()
 {
 int opc1,opc2;
 do{
+    printf("<<< Concesionaria Ruedas de Oro >>>\n");
+    printf("-----------------------------------\n");
     printf("Gestion de Autos\n");
     printf("1. Ingresar nuevo auto\n");
     printf("2. Mostrar autos\n");
